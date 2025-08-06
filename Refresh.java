@@ -52,11 +52,11 @@ public class Refresh {
             int targetHsWhileHovering = 40;
 
 
-            double Kph = 200.0;
+            double Kph = 10;
             double Kih = 0.0;
             double Kdh = 2.0;
 
-            double Kpp = 200.5;
+            double Kpp = 10.5;
             double Kip = 0.0;
             double Kdp = 4.0;
             System.err.println("Start " + XflatOne);
