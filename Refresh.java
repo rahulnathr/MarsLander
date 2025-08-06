@@ -82,18 +82,15 @@ public class Refresh {
                 double totalError = -((Kph * errorHs) + (Kih * integralNotOverTarget) + (Kdh * errorDiff) +
                         (Kpp * errorPosition) + (Kip * integralPosition) + (Kdp * errorDiffPos));
                 System.err.println("Total error " + totalError);
-                if(Math.abs(HS) < 20 && Math.abs(VS) < 40){
-                    System.err.println("Maybe i know a condition..");
-                }
                 if (Math.abs(HS) > 56) {
                     System.err.println("Block 11");
                     totalError = getOptimalBrakingAngle(HS, VS);
                 } else if (Math.abs(VS) > 23) {
 
-                    if(Math.abs(HS) < 20 && Math.abs(VS) < 40){
+                    if (Math.abs(HS) < 20 && Math.abs(VS) < 40) {
                         System.err.println("fucked");
                         totalError = Math.max(-90, Math.min(90, totalError));
-                    }else{
+                    } else {
                         totalError = 0;
                     }
                     System.err.println("Block 21");
