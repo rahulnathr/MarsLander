@@ -51,21 +51,22 @@ public class Refresh {
             int targetHsWhileHovering = 40;
 
 
-            double Kph = 10.0;
+            double Kph = 0;
             double Kih = 0.0;
-            double Kdh = 2.0;
+            double Kdh = 0.0;
 
-            double Kpp = 10.5;
+            double Kpp = 10.0;
             double Kip = 0.0;
-            double Kdp = 4.0;
+            double Kdp = 0.0;
             System.err.println("Start " + XflatOne);
             System.err.println("End " + XflatTwo);
             System.err.println("Target " + targetPosition);
 
             if (!isOverTargetArea(X, XflatOne, XflatTwo)) {
                 if (findDirectionOfHorizontalSpeed(X, XflatOne, XflatTwo) == -1) {
-                    targetHsWhileHovering = -targetHsWhileHovering;
+                    targetHsWhileHovering = (int) Math.signum((targetPosition - X)) * targetHsWhileHovering;
                 }
+                System.err.println("Target HS --> " + targetHsWhileHovering);
                 System.err.println("Not over target " + targetHsWhileHovering + " abs " + Math.abs(HS));
                 double errorHs = targetHsWhileHovering - HS;
                 integralNotOverTarget += errorHs;
@@ -82,6 +83,9 @@ public class Refresh {
                 double totalError = -((Kph * errorHs) + (Kih * integralNotOverTarget) + (Kdh * errorDiff) +
                         (Kpp * errorPosition) + (Kip * integralPosition) + (Kdp * errorDiffPos));
                 System.err.println("Total error " + totalError);
+                if (Math.abs(HS) < 20 && Math.abs(VS) < 40) {
+                    System.err.println("Maybe i know a condition..");
+                }
                 if (Math.abs(HS) > 56) {
                     System.err.println("Block 11");
                     totalError = getOptimalBrakingAngle(HS, VS);
