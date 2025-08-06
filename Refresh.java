@@ -95,7 +95,7 @@ public class Refresh {
                 }
                 rotation = (int) totalError;
             } else {
-                double errorHs = 5 - HS;
+                double errorHs = 0 - HS;
                 integralOverTarget += errorHs;
                 double errorDiff = errorHs - lastErrorOverTarget;
                 lastErrorOverTarget = errorHs;
