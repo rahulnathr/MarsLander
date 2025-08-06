@@ -47,50 +47,30 @@ public class Refresh {
             int P = in.nextInt(); // the thrust power (0 to 4).
 
             int targetPosition = (XflatOne + XflatTwo) / 2;
-            int targetHsSpeedOverLanding = 20;
-            int targetHsWhileHovering = 40;
-
-
-            double Kph = 0;
-            double Kih = 0.0;
-            double Kdh = 0.0;
 
             double Kpp = 10.0;
-            double Kip = 0.0;
-            double Kdp = 0.0;
+            double Kip = 0.005;
+            double Kdp = 5.0;
             System.err.println("Start " + XflatOne);
             System.err.println("End " + XflatTwo);
             System.err.println("Target " + targetPosition);
 
             if (!isOverTargetArea(X, XflatOne, XflatTwo)) {
-                if (findDirectionOfHorizontalSpeed(X, XflatOne, XflatTwo) == -1) {
-                    targetHsWhileHovering = (int) Math.signum((targetPosition - X)) * targetHsWhileHovering;
-                }
-                System.err.println("Target HS --> " + targetHsWhileHovering);
-                System.err.println("Not over target " + targetHsWhileHovering + " abs " + Math.abs(HS));
-                double errorHs = targetHsWhileHovering - HS;
-                integralNotOverTarget += errorHs;
-                double errorDiff = errorHs - lastErrorNotOverTarget;
-                lastErrorNotOverTarget = errorHs;
-
                 double errorPosition = targetPosition - X;
                 System.err.println("Position error " + errorPosition);
                 integralPosition += errorPosition;
+                System.err.println("Integral position before" + integralPosition);
                 integralPosition = Math.max(-1000, Math.min(1000, integralPosition));
+                System.err.println("Integral position after" + integralPosition);
                 double errorDiffPos = errorPosition - lastErrorPosition;
                 lastErrorPosition = errorPosition;
 
-                double totalError = -((Kph * errorHs) + (Kih * integralNotOverTarget) + (Kdh * errorDiff) +
-                        (Kpp * errorPosition) + (Kip * integralPosition) + (Kdp * errorDiffPos));
+                double totalError = -((Kpp * errorPosition) + (Kip * integralPosition) + (Kdp * errorDiffPos));
                 System.err.println("Total error " + totalError);
-                if (Math.abs(HS) < 20 && Math.abs(VS) < 40) {
-                    System.err.println("Maybe i know a condition..");
-                }
                 if (Math.abs(HS) > 56) {
                     System.err.println("Block 11");
                     totalError = getOptimalBrakingAngle(HS, VS);
                 } else if (Math.abs(VS) > 23) {
-
                     if (Math.abs(HS) < 20 && Math.abs(VS) < 40) {
                         System.err.println("fucked");
                         totalError = Math.max(-90, Math.min(90, totalError));
@@ -103,23 +83,16 @@ public class Refresh {
                     totalError = Math.max(-90, Math.min(90, totalError));
                 }
 
-                // if(Math.abs(HS) < 20 && Math.abs(VS) < 40){
-                //     totalError = Math.max(-90, Math.min(90, totalError));
-                // }
                 rotation = (int) totalError;
             } else {
-                double errorHs = 0 - HS;
-                integralOverTarget += errorHs;
-                double errorDiff = errorHs - lastErrorOverTarget;
-                lastErrorOverTarget = errorHs;
 
                 double errorPosition = targetPosition - X;
                 integralPosition += errorPosition;
+                System.err.println("Integral position after" + integralPosition);
                 double errorDiffPos = errorPosition - lastErrorPosition;
                 lastErrorPosition = errorPosition;
 
-                double totalError = -((Kph * errorHs) + (Kih * integralNotOverTarget) + (Kdh * errorDiff) +
-                        (Kpp * errorDiffPos) + (Kip * integralPosition) + (Kdp * errorDiffPos));
+                double totalError = -((Kpp * errorDiffPos) + (Kip * integralPosition) + (Kdp * errorDiffPos));
                 if (Math.abs(HS) > 40) {
                     System.err.println("Block 1");
                     totalError = getOptimalBrakingAngle(HS, VS);
