@@ -25,12 +25,6 @@ public class Refresh {
         int thrust = 4;
         int rotation = 0;
 
-        double integralNotOverTarget = 0;
-        double lastErrorNotOverTarget = 0;
-
-        double integralOverTarget = 0;
-        double lastErrorOverTarget = 0;
-
 
         double integralPosition = 0;
         double lastErrorPosition = 0;
@@ -59,9 +53,7 @@ public class Refresh {
                 double errorPosition = targetPosition - X;
                 System.err.println("Position error " + errorPosition);
                 integralPosition += errorPosition;
-                System.err.println("Integral position before" + integralPosition);
                 integralPosition = Math.max(-1000, Math.min(1000, integralPosition));
-                System.err.println("Integral position after" + integralPosition);
                 double errorDiffPos = errorPosition - lastErrorPosition;
                 lastErrorPosition = errorPosition;
 
@@ -72,7 +64,7 @@ public class Refresh {
                     totalError = getOptimalBrakingAngle(HS, VS);
                 } else if (Math.abs(VS) > 23) {
                     if (Math.abs(HS) < 20 && Math.abs(VS) < 40) {
-                        System.err.println("fucked");
+                        System.err.println("inner loop pid");
                         totalError = Math.max(-90, Math.min(90, totalError));
                     } else {
                         totalError = 0;
@@ -85,7 +77,6 @@ public class Refresh {
 
                 rotation = (int) totalError;
             } else {
-
                 double errorPosition = targetPosition - X;
                 integralPosition += errorPosition;
                 System.err.println("Integral position after" + integralPosition);
@@ -124,21 +115,12 @@ public class Refresh {
         return X >= start && X <= end;
     }
 
-    static int findDirectionOfHorizontalSpeed(int X, int start, int end) {
-        if (X >= start && X >= end) {
-            return -1;
-        } else if (X <= start && X <= end) {
-            return 1;
-        } else {
-            return 0;
-        }
-    }
-
-    public static int getOptimalBrakingAngle(int horizontalSpeed, int verticalSpeed) {
+    static int getOptimalBrakingAngle(int horizontalSpeed, int verticalSpeed) {
         double hs = horizontalSpeed;
         double vs = verticalSpeed;
         double speed = Math.hypot(hs, vs);
         return (int) Math.toDegrees(Math.asin(hs / speed));
     }
+
 }
 
